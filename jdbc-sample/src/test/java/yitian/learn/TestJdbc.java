@@ -123,8 +123,7 @@ public class TestJdbc {
     @Test
     public void testDelete() throws SQLException {
         try (PreparedStatement statement = connection.prepareStatement("DELETE FROM user WHERE username LIKE 'test%'")) {
-            int rows = statement.executeUpdate();
-            assertThat(rows, not(lessThan(1)));
+
         }
     }
 
@@ -174,4 +173,35 @@ public class TestJdbc {
     }
 
 
+    @Test
+    public void testInProcedure() throws SQLException {
+        try (CallableStatement statement = connection.prepareCall("CALL find_all_blogs_of(?)")) {
+            statement.setInt(1, 1);
+            ResultSet rs = statement.executeQuery();
+
+            List<User> users = new ArrayList<>();
+            while (rs.next()) {
+                User user = new User();
+                user.setId(rs.getInt(rs.getInt(1)));
+                user.setId(rs.getInt(1));
+                user.setUsername(rs.getString(2));
+                user.setPassword(rs.getString(3));
+                user.setNickname(rs.getString(4));
+                user.setBirthday(rs.getDate(5));
+                users.add(user);
+            }
+            users.forEach(System.out::println);
+        }
+    }
+
+    @Test
+    public void testOutProcedure() throws SQLException {
+        try (CallableStatement statement = connection.prepareCall("CALL get_total_user_count(?)")) {
+            statement.registerOutParameter(1, Types.INTEGER);
+            statement.execute();
+            int count = statement.getInt(1);
+            System.out.println("用户个数是：" + count);
+        }
+
+    }
 }

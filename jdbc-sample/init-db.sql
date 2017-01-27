@@ -16,3 +16,27 @@ CREATE TABLE blog (
   author      INT          NOT NULL,
   FOREIGN KEY (author) REFERENCES user (id)
 );
+
+DELIMITER //
+
+CREATE PROCEDURE find_all_blogs_of(IN user_id INT)
+  BEGIN
+    SELECT
+      id,
+      username,
+      password,
+      nickname,
+      birthday
+    FROM user
+    WHERE id = user_id;
+  END;
+
+CREATE PROCEDURE get_total_user_count(OUT count INT)
+  BEGIN
+    SELECT count(id)
+    FROM user
+    INTO count;
+  END;
+
+
+DELIMITER ;
