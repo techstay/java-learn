@@ -1,14 +1,11 @@
 package yitian.learn;
 
 
-import com.mysql.jdbc.jdbc2.optional.MysqlConnectionPoolDataSource;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.FixMethodOrder;
-import org.junit.Test;
+import org.junit.*;
 import org.junit.runners.MethodSorters;
+import yitian.learn.jdbc.DataSourceUtils;
 import yitian.learn.jdbc.JdbcUtil;
 import yitian.learn.jdbc.User;
 
@@ -21,11 +18,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.lessThan;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsEqual.equalTo;
-import static org.hamcrest.core.IsNot.not;
 import static org.junit.Assert.assertNotNull;
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
@@ -42,10 +37,23 @@ public class TestJdbc {
 
     @AfterClass
     public static void clean() throws SQLException {
-        try (Statement statement = connection.createStatement()) {
-            statement.executeUpdate("DELETE FROM user WHERE username LIKE 'test%'");
-        }
         connection.close();
+    }
+
+    @Before
+    public void before() throws SQLException {
+        try (PreparedStatement statement = connection.prepareStatement("INSERT INTO user(username,password) VALUES(?,?)")) {
+            statement.setString(1, "test");
+            statement.setString(2, "123456");
+            statement.executeUpdate();
+        }
+    }
+
+    @After
+    public void after() throws SQLException {
+        try (PreparedStatement statement = connection.prepareStatement("DELETE FROM user")) {
+            statement.executeUpdate();
+        }
     }
 
     @Test
@@ -121,13 +129,6 @@ public class TestJdbc {
         logger.info("DriverName:{}", metaData.getDriverName());
         logger.info("DriverVersion:{}", metaData.getDriverVersion());
 
-    }
-
-    @Test
-    public void testDelete() throws SQLException {
-        try (PreparedStatement statement = connection.prepareStatement("DELETE FROM user WHERE username LIKE 'test%'")) {
-
-        }
     }
 
     @Test
@@ -210,12 +211,41 @@ public class TestJdbc {
 
     @Test
     public void testDataSource() throws SQLException {
-        MysqlConnectionPoolDataSource dataSource = new MysqlConnectionPoolDataSource();
-        dataSource.setUrl(JdbcUtil.URL);
-        dataSource.setUser(JdbcUtil.USERNAME);
-        dataSource.setPassword(JdbcUtil.PASSWORD);
-        dataSource.setUseSSL(false);
-        Connection connection = dataSource.getConnection();
-        assertThat(connection, notNullValue());
+        DataSource dataSource = DataSourceUtils.getDataSource();
+        Connection conn = dataSource.getConnection();
+        assertThat(conn, notNullValue());
+    }
+
+    @Test
+    public void testTransaction() throws SQLException {
+        DataSource dataSource = DataSourceUtils.getDataSource();
+        Connection conn = dataSource.getConnection();
+        conn.setAutoCommit(false);
+        PreparedStatement selectOne = conn.prepareStatement("SELECT count(id) FROM user WHERE username =?");
+        PreparedStatement insertOne = conn.prepareStatement("INSERT INTO user(username,password) VALUES(?,?)");
+        //成功插入
+        String username1 = "zhang3";
+        insertOne.setString(1, username1);
+        insertOne.setString(2, "123456");
+        insertOne.executeUpdate();
+        conn.commit();
+
+        selectOne.setString(1, username1);
+        ResultSet rs = selectOne.executeQuery();
+        rs.first();
+        assertThat(rs.getInt(1), is(1));
+
+        //插入失败
+        String username2 = "li4";
+        insertOne.setString(1, username2);
+        insertOne.setString(2, "123456");
+        insertOne.executeUpdate();
+        conn.rollback();
+
+        selectOne.setString(1, username2);
+        rs = selectOne.executeQuery();
+        rs.first();
+        assertThat(rs.getInt(1), is(0));
+
     }
 }
