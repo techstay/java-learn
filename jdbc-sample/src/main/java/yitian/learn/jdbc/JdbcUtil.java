@@ -5,7 +5,7 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 
 public class JdbcUtil {
-    public static String URL = "jdbc:mysql://localhost:3306/jdbclearn?useSSL=false";
+    public static String URL = "jdbc:mysql://localhost:3306/jdbclearn";
     public static String USERNAME = "root";
     public static String PASSWORD = "12345678";
 
