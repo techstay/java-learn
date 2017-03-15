@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:task="http://www.springframework.org/schema/task"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task.xsd">
+
+    <context:annotation-config/>
+    <context:component-scan base-package="yitian.study"/>
+
+    <bean id="simpleService" class="yitian.study.service.SimpleService"/>
+    <bean id="expensiveTaskService"
+          class="yitian.study.service.ExpensiveTaskService"/>
+    <bean id="quartzService"
+          class="yitian.study.service.QuartzService"/>
+
+    <beans profile="spring">
+        <task:annotation-driven executor="threadPoolTaskExecutor"
+                                scheduler="threadPoolTaskScheduler"/>
+
+        <task:scheduler id="threadPoolTaskScheduler"
+                        pool-size="10"/>
+        <task:executor id="threadPoolTaskExecutor"
+                       pool-size="10"
+                       queue-capacity="10"/>
+        <task:scheduled-tasks>
+            <task:scheduled ref="simpleService" method="doService"
+                            cron="*/1 * * * * *"/>
+            <task:scheduled ref="expensiveTaskService" method="doService"
+                            cron="*/2 * * * * ?"/>
+        </task:scheduled-tasks>
+    </beans>
+
+    <beans profile="quartz">
+        <bean id="jobDetail"
+              class="org.springframework.scheduling.quartz.JobDetailFactoryBean">
+            <property name="jobClass" value="yitian.study.service.QuartzService"/>
+            <property name="jobDataAsMap">
+                <map>
+                    <entry key="timeout" value="10"/>
+                </map>
+            </property>
+        </bean>
+        <bean id="methodJobDetail" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+            <property name="targetObject" ref="quartzService"/>
+            <property name="targetMethod" value="doService"/>
+            <property name="concurrent" value="true"/>
+        </bean>
+        <bean id="simpleTrigger" class="org.springframework.scheduling.quartz.SimpleTriggerFactoryBean">
+            <property name="jobDetail" ref="jobDetail"/>
+            <property name="startDelay" value="0"/>
+            <property name="repeatInterval" value="1000"/>
+        </bean>
+
+        <bean id="cronTrigger" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+            <property name="jobDetail" ref="methodJobDetail"/>
+            <property name="cronExpression" value="*/2 * * * * ?"/>
+        </bean>
+        <bean id="quartzScheduler" class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
+            <property name="triggers">
+                <list>
+                    <ref bean="cronTrigger"/>
+                    <ref bean="simpleTrigger"/>
+                </list>
+            </property>
+        </bean>
+    </beans>
+</beans>
