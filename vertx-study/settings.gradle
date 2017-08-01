@@ -1,0 +1,3 @@
+rootProject.name = 'vertx-study'
+include 'vertx-core-study'
+
