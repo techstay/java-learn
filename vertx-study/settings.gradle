@@ -1,3 +1,4 @@
 rootProject.name = 'vertx-study'
 include 'vertx-core-study'
+include 'vertx-webclient-study'
 
