@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--导入类-->
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
+<!--设置布局-->
+<?import java.net.URL?>
+<GridPane xmlns="http://javafx.com/javafx"
+          xmlns:fx="http://javafx.com/fxml"
+          fx:controller="yitian.javafxsample.Controller"
+          prefHeight="400.0" prefWidth="600.0"
+          alignment="center" hgap="10" vgap="10">
+    <stylesheets>
+        <URL value="@style.css"/>
+    </stylesheets>
+    <padding>
+        <Insets top="25" right="25" bottom="10" left="25"/>
+    </padding>
+    <!--欢迎文本-->
+    <Text text="Welcome"
+          GridPane.columnIndex="0" GridPane.rowIndex="0"
+          GridPane.columnSpan="2">
+        <font>
+            <Font name="Consolas" size="20"/>
+        </font>
+    </Text>
+
+    <Label text="用户名:"
+           GridPane.columnIndex="0" GridPane.rowIndex="1"/>
+
+    <TextField
+            GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+
+    <Label text="密码:"
+           GridPane.columnIndex="0" GridPane.rowIndex="2"/>
+
+    <PasswordField fx:id="passwordField"
+                   GridPane.columnIndex="1" GridPane.rowIndex="2"/>
+    <!--按钮及提示文本-->
+    <HBox spacing="10" alignment="bottom_right"
+          GridPane.columnIndex="1" GridPane.rowIndex="4">
+        <Button id="btnShowPassword" text="显示密码"
+                onAction="#showPasswordButton"/>
+    </HBox>
+
+    <Text fx:id="hintText"
+          GridPane.columnIndex="0" GridPane.columnSpan="2"
+          GridPane.halignment="RIGHT" GridPane.rowIndex="6"/>
+</GridPane>
