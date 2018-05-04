@@ -98,7 +98,7 @@ class OkHttpSample {
                 .build();
         Request request = new Request.Builder()
                 .url(url)
-                .post(requestBody)
+                .post(multipartBody)
                 .build();
 
         client.newCall(request).enqueue(new Callback() {
