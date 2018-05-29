@@ -1,0 +1,36 @@
+plugins {
+    id 'java'
+    id 'idea'
+}
+
+group 'yitian.study.study'
+version '1.0-SNAPSHOT'
+
+ext {
+    jacksonVersion = '2.9.5'
+}
+sourceCompatibility = 10
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compile group: 'com.fasterxml.jackson.core', name: 'jackson-core', version: jacksonVersion
+    compile group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: jacksonVersion
+    compile group: 'com.fasterxml.jackson.core', name: 'jackson-annotations', version: jacksonVersion
+    // 引入XML功能
+    compile group: 'com.fasterxml.jackson.dataformat', name: 'jackson-dataformat-xml', version: jacksonVersion
+    // 比JDK自带XML实现更高效的类库
+    compile group: 'com.fasterxml.woodstox', name: 'woodstox-core', version: '5.1.0'
+    // Java 8 新功能
+    compile group: 'com.fasterxml.jackson.datatype', name: 'jackson-datatype-jsr310', version: jacksonVersion
+    compile group: 'com.fasterxml.jackson.module', name: 'jackson-module-parameter-names', version: jacksonVersion
+    compile group: 'com.fasterxml.jackson.datatype', name: 'jackson-datatype-jdk8', version: jacksonVersion
+
+    compileOnly group: 'org.projectlombok', name: 'lombok', version: '1.16.22'
+    compile group: 'javax.xml.bind', name: 'jaxb-api', version: '2.3.0'
+
+    testCompile('org.junit.jupiter:junit-jupiter-api:5.2.0')
+    testRuntime('org.junit.jupiter:junit-jupiter-engine:5.2.0')
+}
