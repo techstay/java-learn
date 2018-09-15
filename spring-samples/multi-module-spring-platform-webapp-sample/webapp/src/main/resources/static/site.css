@@ -1,0 +1,17 @@
+body {
+    margin: 2em;
+}
+
+.center {
+    margin: 0 auto;
+    text-align: center;
+}
+
+table, th, tr, td {
+    border: 1px solid black;
+    border-collapse: collapse;
+}
+
+td:hover {
+    background-color:mintcream;
+}

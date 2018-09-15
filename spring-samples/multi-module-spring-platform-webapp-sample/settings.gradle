@@ -1,0 +1,4 @@
+rootProject.name = 'multi-module-spring-platform-webapp-sample'
+include 'booklist'
+include 'webapp'
+

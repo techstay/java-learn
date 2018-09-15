@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>主页</title>
+    <link rel="stylesheet" th:href="@{/site.css}"/>
+</head>
+<body>
+
+
+<div class="center">
+    <h1>基于Spring-Platform的多模块Gradle项目示例</h1>
+
+    <div class="center" style="width:50%">
+        <h2>推荐书目</h2>
+        <table class="center" style="width:50%">
+            <thead>
+            <tr>
+                <th>书目</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="book : ${booklist}">
+                <td th:text="'《'+${book}+'》'"></td>
+            </tr>
+            </tbody>
+
+        </table>
+    </div>
+
+</div>
+
+</body>
+</html>

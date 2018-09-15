@@ -1,0 +1,26 @@
+group 'yitian.study'
+version '1.0-SNAPSHOT'
+
+buildscript {
+    repositories {
+        jcenter()
+    }
+    dependencies {
+        classpath 'io.spring.gradle:dependency-management-plugin:1.0.0.RELEASE'
+    }
+}
+
+allprojects {
+    apply plugin: 'io.spring.dependency-management'
+
+    repositories {
+        mavenCentral()
+    }
+
+    dependencyManagement {
+        imports {
+            mavenBom 'io.spring.platform:platform-bom:Cairo-SR4'
+        }
+    }
+}
+
