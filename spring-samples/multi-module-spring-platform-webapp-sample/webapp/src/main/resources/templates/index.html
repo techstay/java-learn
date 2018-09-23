@@ -3,32 +3,55 @@
 <head>
     <meta charset="UTF-8">
     <title>主页</title>
+    <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
     <link rel="stylesheet" th:href="@{/site.css}"/>
 </head>
 <body>
-
-
-<div class="center">
-    <h1>基于Spring-Platform的多模块Gradle项目示例</h1>
-
-    <div class="center" style="width:50%">
-        <h2>推荐书目</h2>
-        <table class="center" style="width:50%">
-            <thead>
-            <tr>
-                <th>书目</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr th:each="book : ${booklist}">
-                <td th:text="'《'+${book}+'》'"></td>
-            </tr>
-            </tbody>
-
-        </table>
-    </div>
-
+<div id="app">
+    <el-container>
+        <el-header>
+            <el-row type="flex" justify="center">
+                <el-col :span="12" :offset="6">
+                    <h3>基于Spring IO Platform的多模块Gradle项目示例</h3>
+                </el-col>
+            </el-row>
+        </el-header>
+        <el-main>
+            <el-row>
+                <el-col :span="12" :offset="6">
+                    <el-table stripe border :data="tableData">
+                        <el-table-column prop="book" label="书目"></el-table-column>
+                    </el-table>
+                </el-col>
+            </el-row>
+        </el-main>
+    </el-container>
 </div>
 
+<script src="https://unpkg.com/vue/dist/vue.js"></script>
+<script src="https://unpkg.com/element-ui/lib/index.js"></script>
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+
+<script>
+    let vm = new Vue({
+        el: '#app',
+        computed: {
+            tableData: function () {
+                let data = []
+                axios.get('/booklist')
+                    .then(response => {
+                        for (let book of response.data) {
+                            data.push({book: book})
+                        }
+                    })
+                    .catch(error => {
+                        this.$notify({title: '网络错误', message: error})
+                    })
+                return data
+            }
+
+        }
+    })
+</script>
 </body>
 </html>
