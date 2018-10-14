@@ -8,7 +8,6 @@ public class MyBookList implements IBookList {
 
     @Override
     public List<String> getBookList() {
-        return Stream.of("金瓶梅", "少年阿宾", "少妇白洁")
-                .collect(Collectors.toList());
+        return List.of("金瓶梅", "少年阿宾", "少妇白洁");
     }
 }
