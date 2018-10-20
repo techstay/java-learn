@@ -2,11 +2,12 @@ package yitian.study.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import yitian.study.booklist.IBookList;
+import yitian.study.entity.ISpringVersion;
+import yitian.study.entity.SpringVersion;
 
 import java.util.List;
 
@@ -25,5 +26,11 @@ public class MainController {
     @ResponseBody
     List<String> bookList() {
         return myBookList.getBookList();
+    }
+
+    @RequestMapping(value = "/springversion", produces = "application/json")
+    @ResponseBody
+    ISpringVersion springVersion() {
+        return new SpringVersion();
     }
 }

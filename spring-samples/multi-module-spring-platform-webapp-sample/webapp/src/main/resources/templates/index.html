@@ -19,8 +19,20 @@
         <el-main>
             <el-row>
                 <el-col :span="12" :offset="6">
-                    <el-table stripe border :data="tableData">
-                        <el-table-column prop="book" label="书目"></el-table-column>
+                    <el-table stripe border :data="bookData">
+                        <el-table-column label="图书信息">
+                            <el-table-column prop="book" label="书目"></el-table-column>
+                        </el-table-column>
+                    </el-table>
+                </el-col>
+            </el-row>
+            <el-row>
+                <el-col :span="12" :offset="6">
+                    <el-table stripe border :data="springData">
+                        <el-table-column label="Spring版本">
+                            <el-table-column prop="name" label="属性"></el-table-column>
+                            <el-table-column prop="value" label="值"></el-table-column>
+                        </el-table-column>
                     </el-table>
                 </el-col>
             </el-row>
@@ -36,20 +48,31 @@
     let vm = new Vue({
         el: '#app',
         computed: {
-            tableData: function () {
+            bookData: function () {
                 let data = []
                 axios.get('/booklist')
                     .then(response => {
                         for (let book of response.data) {
-                            data.push({book: book})
+                            data.push({'book': book})
                         }
                     })
                     .catch(error => {
                         this.$notify({title: '网络错误', message: error})
                     })
                 return data
+            },
+            springData: function () {
+                let data = []
+                axios.get('/springversion')
+                    .then(response => {
+                        data.push({'name': 'Spring版本', 'value': response.data.springVersion})
+                        data.push({'name': 'Spring Boot版本', 'value': response.data.springBootVersion})
+                    })
+                    .catch(error => {
+                        this.$notify({title: '网络错误', message: error})
+                    })
+                return data
             }
-
         }
     })
 </script>
